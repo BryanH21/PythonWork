@@ -1,13 +1,18 @@
 import tkinter as tk
 from tkinter import ttk
-from PIL import Image, ImageTk
+import os
+
+# return to home 
+def return_to_home():
+    root.destroy()
+    os.system("python3 home.py")
 
 # Sample game data
 games = [
     {
         'name': 'Minecraft',
         'rating': 5,
-        'image': 'images/minecraft1.png',  
+        'image': 'minecraft1.png',  
         'description': 'A thrilling adventure game set in a vast open world.',
         'reasons': ['Creative freedom', 'Endless adventure', 'Engaging gameplay'],
         'store_links': ['Store 1', 'Store 2']
@@ -15,50 +20,37 @@ games = [
     {
         'name': 'Fortnite',
         'rating': 4,
-        'image': 'images/fortnite1.jpg',
+        'image': 'fortnite1.png',  
         'description': 'An action-packed battle royale with character customization and endless gameplay modes.',
-        'reasons': ['Great combat system', 'Multiple gamemodes', 'Engaging multiplayer'],
+        'reasons': ['Great combat system', 'Multiple game modes', 'Engaging multiplayer'],
         'store_links': ['Store 1', 'Store 2']
     }
 ]
 
-# Main Tkinter Window
-root = tk.Tk()
-root.title("Best Games")
-
-# Header
-header = tk.Label(root, text="Best Games Right Now", font=("Arial", 18, "bold"))
-header.pack(pady=10)
-
-# Game Display Area (Move above filter function)
-game_frame = tk.Frame(root)
-game_frame.pack(pady=10, fill="both", expand=True)
-
-# Function to filter games by rating
 def filter_games():
     for widget in game_frame.winfo_children():
         widget.destroy()  # Clear previous results
 
     for game in games:
-        if game['rating'] >= 4:  # Filtering 4 and 5-star games
+        if game['rating'] >= 4: 
             display_game(game)
 
-# Function to display a game in Tkinter UI
 def display_game(game):
     frame = tk.Frame(game_frame, borderwidth=2, relief="ridge", padx=10, pady=10)
     frame.pack(pady=10, fill="x")
 
-    # Load and display the image
-    img = Image.open(game['image'])
-    img = img.resize((150, 100), Image.LANCZOS)  # Updated resizing method
-    img = ImageTk.PhotoImage(img)
-
-    img_label = tk.Label(frame, image=img)
-    img_label.image = img  # Keep reference to avoid garbage collection
-    img_label.pack(side="left")
-
     text_frame = tk.Frame(frame)
     text_frame.pack(side="left", padx=10)
+
+    # Load Image (only supports PNG)
+    try:
+        img = tk.PhotoImage(file=game['image'])  # Tkinter's built in image handling so no pil due to pil now being updated to latest version on python
+        img_label = tk.Label(frame, image=img)
+        img_label.image = img  # Keep reference to avoid garbage collection
+        img_label.pack(side="left", padx=10)
+    except tk.TclError:
+        img_label = tk.Label(frame, text="[Image Not Found]", fg="red")
+        img_label.pack(side="left", padx=10)
 
     tk.Label(text_frame, text=game['name'], font=("Arial", 14, "bold")).pack(anchor="w")
     tk.Label(text_frame, text=f"⭐ Rating: {game['rating']}", font=("Arial", 12)).pack(anchor="w")
@@ -70,15 +62,24 @@ def display_game(game):
     for reason in game['reasons']:
         tk.Label(text_frame, text=f"- {reason}", font=("Arial", 10)).pack(anchor="w")
 
-    store_links = tk.Label(text_frame, text=f"Buy from: {game['store_links'][0]}, {game['store_links'][1]}", fg="blue", cursor="hand2")
+    store_links = tk.Label(text_frame, text=f"Buy from: {', '.join(game['store_links'])}", fg="blue", cursor="hand2")
     store_links.pack(anchor="w")
 
-# Filter Button
+root = tk.Tk()
+root.title("Best Games")
+
+header = tk.Label(root, text="Best Games Right Now", font=("Arial", 18, "bold"))
+header.pack(pady=10)
+
 filter_button = tk.Button(root, text="Show Only 4 & 5 Star Games", command=filter_games)
 filter_button.pack()
 
-# Load initial games
+game_frame = tk.Frame(root)
+game_frame.pack(pady=10, fill="both", expand=True)
+
+home_button = tk.Button(root, text="Return to Home", command=return_to_home)
+home_button.pack(paddy=10)
+
 filter_games()
 
-# Run Tkinter event loop
 root.mainloop()
