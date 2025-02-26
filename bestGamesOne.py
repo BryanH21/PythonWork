@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 import os
 
-# return to home 
 def return_to_home():
     root.destroy()
     os.system("python3 home.py")
@@ -44,7 +43,7 @@ def display_game(game):
 
     # Load Image (only supports PNG)
     try:
-        img = tk.PhotoImage(file=game['image'])  # Tkinter's built in image handling so no pil due to pil now being updated to latest version on python
+        img = tk.PhotoImage(file=game['image'])  # Tkinter's built-in image handling
         img_label = tk.Label(frame, image=img)
         img_label.image = img  # Keep reference to avoid garbage collection
         img_label.pack(side="left", padx=10)
@@ -78,7 +77,7 @@ game_frame = tk.Frame(root)
 game_frame.pack(pady=10, fill="both", expand=True)
 
 home_button = tk.Button(root, text="Return to Home", command=return_to_home)
-home_button.pack(paddy=10)
+home_button.pack(pady=10)  
 
 filter_games()
 
