@@ -5,22 +5,34 @@ from PIL import Image, ImageTk
 # Sample game data
 games = [
     {
-        'name': 'Game Title 1',
+        'name': 'Minecraft',
         'rating': 5,
-        'image': 'game1.jpg',  # Place images in the same directory
+        'image': 'images/minecraft1.png',  
         'description': 'A thrilling adventure game set in a vast open world.',
-        'reasons': ['Immersive storyline', 'Stunning graphics', 'Engaging gameplay'],
+        'reasons': ['Creative freedom', 'Endless adventure', 'Engaging gameplay'],
         'store_links': ['Store 1', 'Store 2']
     },
     {
-        'name': 'Game Title 2',
+        'name': 'Fortnite',
         'rating': 4,
-        'image': 'game2.jpg',
-        'description': 'An action-packed RPG with deep character customization.',
-        'reasons': ['Great combat system', 'Extensive skill trees', 'Engaging multiplayer'],
+        'image': 'images/fortnite1.jpg',
+        'description': 'An action-packed battle royale with character customization and endless gameplay modes.',
+        'reasons': ['Great combat system', 'Multiple gamemodes', 'Engaging multiplayer'],
         'store_links': ['Store 1', 'Store 2']
     }
 ]
+
+# Main Tkinter Window
+root = tk.Tk()
+root.title("Best Games")
+
+# Header
+header = tk.Label(root, text="Best Games Right Now", font=("Arial", 18, "bold"))
+header.pack(pady=10)
+
+# Game Display Area (Move above filter function)
+game_frame = tk.Frame(root)
+game_frame.pack(pady=10, fill="both", expand=True)
 
 # Function to filter games by rating
 def filter_games():
@@ -38,7 +50,7 @@ def display_game(game):
 
     # Load and display the image
     img = Image.open(game['image'])
-    img = img.resize((150, 100), Image.ANTIALIAS)
+    img = img.resize((150, 100), Image.LANCZOS)  # Updated resizing method
     img = ImageTk.PhotoImage(img)
 
     img_label = tk.Label(frame, image=img)
@@ -61,21 +73,9 @@ def display_game(game):
     store_links = tk.Label(text_frame, text=f"Buy from: {game['store_links'][0]}, {game['store_links'][1]}", fg="blue", cursor="hand2")
     store_links.pack(anchor="w")
 
-# Main Tkinter Window
-root = tk.Tk()
-root.title("Best Games")
-
-# Header
-header = tk.Label(root, text="Best Games Right Now", font=("Arial", 18, "bold"))
-header.pack(pady=10)
-
 # Filter Button
 filter_button = tk.Button(root, text="Show Only 4 & 5 Star Games", command=filter_games)
 filter_button.pack()
-
-# Game Display Area
-game_frame = tk.Frame(root)
-game_frame.pack(pady=10, fill="both", expand=True)
 
 # Load initial games
 filter_games()
