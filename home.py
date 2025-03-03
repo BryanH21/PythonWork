@@ -49,3 +49,4 @@ mainMenu.pack()
 rateGame.pack_forget()  # Ensure it's hidden at the start
 
 root.mainloop()
+
