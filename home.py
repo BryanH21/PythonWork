@@ -4,11 +4,6 @@ import bestGamesOne
 import rateGame
 import reviews
 
-def return_to_main():
-    """Return to the main menu"""
-    rateGame.pack_forget()
-    mainMenu.pack()
-
 def open_best_games():
     """Open Best Games inside the same window"""
     mainMenu.pack_forget()  # Hide main menu first
@@ -21,17 +16,18 @@ def open_rate_game():
 # Initialize main window
 root = tk.Tk()
 root.geometry("1440x900")
+root.config(bg="#2C2F33")
 root.title("Rate My Game!")
 
 # Main menu UI
-mainMenu = Frame(root)
+mainMenu = Frame(root, bg="#2C2F33")
 
-top_header = tk.Label(mainMenu, text="Rate My Game!", font=("Arial", 48))
-sub_header = tk.Label(mainMenu, text="The highest rated game this week is God of War: Ragnarok", font=("Arial", 24))
+top_header = tk.Label(mainMenu, text="Rate My Game!", font=("Arial", 48, "bold"), fg="white", bg="#2C2F33")
+sub_header = tk.Label(mainMenu, text="The highest rated game this week is Minecraft", font=("Arial", 24), fg="white", bg="#2C2F33")
 
-buttonRate = tk.Button(mainMenu, text="Rate a Game", command=open_rate_game)
-buttonReviews = tk.Button(mainMenu, text="Reviews")
-buttonBestGames = tk.Button(mainMenu, text="Best Games", command=open_best_games)
+buttonRate = tk.Button(mainMenu, text="Rate a Game", font=("Arial", 14), bg="#7289DA", fg="white", command=open_rate_game)
+buttonReviews = tk.Button(mainMenu, font=("Arial", 14), bg="#7289DA", fg="white", text="Reviews")
+buttonBestGames = tk.Button(mainMenu, font=("Arial", 14), bg="#7289DA", fg="white", text="Best Games", command=open_best_games)
 
 # Pack elements in the main menu
 top_header.pack(pady=10)
@@ -41,6 +37,6 @@ buttonReviews.pack(pady=5)
 buttonBestGames.pack(pady=5)
 
 # Start with the main menu properly
-mainMenu.pack()
+mainMenu.pack(fill="both", expand=True)
 
 root.mainloop()
