@@ -31,7 +31,7 @@ def show_rate_game(root, mainMenu):
     header.pack(pady=10)
 
     # Initializes and packs the list of registered games to rate
-    gameoptionslist = ["The Legend of Zelda: Breath of the Wild", "The Witcher 3: Wild Hunt", "Super Mario Odyssey", "Fortnite", "Minecraft"]
+    gameoptionslist = ["The Legend of Zelda: Breath of the Wild", "The Witcher 3: Wild Hunt", "Super Mario Odyssey", "Fortnite", "Minecraft", "Cyberpunk 2077", "Call of Duty: Black Ops 6", "Lego Star Wars: The Complete Saga", "Lego Star Wars III: The Clone Wars", "Lego Star Wars: The Skywalker Saga"]
     selectedgame = tk.StringVar()
     selectedgame.set("Choose a game to rate")
 
@@ -69,12 +69,8 @@ def submit_rating(root, mainMenu, gametext, reviewtext, ratingtext):
     global gameselected_
     global ratingselected_
     if gameselected_ and ratingselected_ == True:
-        reviews.reviews.append(gametext)
-        reviews.reviews.append(reviewtext)
-        reviews.reviews.append(ratingtext)
-        print(gametext)
-        print(reviewtext)
-        print(ratingtext)
+        newData = {'game': gametext, 'review': reviewtext, 'rating': int(ratingtext)}
+        reviews.reviews.append(newData)
         return_to_home(root, mainMenu)
 
 # Executes when a game has been selected

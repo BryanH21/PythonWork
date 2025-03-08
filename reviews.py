@@ -11,25 +11,39 @@ reviews = [
 ]
 
 # Function to display reviews
-def display_reviews():
+def display_reviews(frame):
+    text_reviews = scrolledtext.ScrolledText(frame, width=75, height=40, bg="#23272A", fg="white")
+    text_reviews.pack(pady=10)
+
     for review in reviews:
         stars = "★" * review["rating"] + "☆" * (5 - review["rating"])
         text_reviews.insert(tk.END, f"Game: {review['game']}\nReview: {review['review']}\nRating: {stars}\n{'-'*40}\n")
     text_reviews.config(state=tk.DISABLED)
 
-# Create the main window
-root = tk.Tk()
-root.title("Game Reviews")
+def show_reviews_page(root, mainMenu):
+    mainMenu.pack_forget()
 
-# Create and place the widgets
-label_title = tk.Label(root, text="Game Reviews", font=("Helvetica", 16))
-label_title.pack(pady=10)
+    # Creates the reviews frame
+    reviewFrame = tk.Frame(root, bg="#2C2F33")
+    reviewFrame.pack(fill="both", expand=True)
 
-text_reviews = scrolledtext.ScrolledText(root, width=60, height=20)
-text_reviews.pack(pady=10)
+    #  Initializes and packs the navigation bar
+    nav_frame = tk.Frame(reviewFrame, bg="#23272A")
+    nav_frame.pack(fill="x", pady=10)
+    
+    back_button = tk.Button(nav_frame, text="← Home", font=("Arial", 14), bg="#7289DA", fg="white", command=lambda: return_to_home(reviewFrame, mainMenu))
+    back_button.pack(side="left", padx=10, pady=5)\
+    
+    # Create and place title
+    label_title = tk.Label(reviewFrame, text="Game Reviews", font=("Arial", 24, "bold"), fg="white", bg="#2C2F33")
+    label_title.pack(pady=10)
 
-# Display reviews
-display_reviews()
+    # Display reviews
+    display_reviews(reviewFrame)
 
-# Run the application
-root.mainloop()
+
+# Exits the review game page and returns to the main menu
+def return_to_home(reviewFrame, mainMenu):
+    """Return to Home Page"""
+    reviewFrame.pack_forget()  # Hide Reviews Games page
+    mainMenu.pack()  # Show the main menu again
