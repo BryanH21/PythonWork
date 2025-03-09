@@ -1,87 +1,108 @@
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk
+from tkinter import messagebox  #  Added for error handling and alerts
 import reviews
 
-gameselected_ = False # This value shows whether or not a game to rate has been selected
-ratingselected_ = False # This value shows whether or not a rating has been selected
-
-# Both of the variables above must be set to True in order to submit a review
+gameselected_ = False  # Tracks if a game has been selected
+ratingselected_ = False  # Tracks if a rating has been selected
 
 def show_rate_game(root, mainMenu):
-    # Hides the main menu page, resets gameselected_ and ratingselected_ back to their defaults, and begins initalizing and packing the rate game page
-    global gameselected_ 
+    """Displays the Rate Game page and hides the main menu."""
+    global gameselected_
     gameselected_ = False
-    global ratingselected_ 
+    global ratingselected_
     ratingselected_ = False
-    mainMenu.pack_forget()
+    mainMenu.pack_forget()  # Hide the main menu
 
+    # Create the Rate Game frame
     rateGameFrame = tk.Frame(root, bg="#2C2F33")
     rateGameFrame.pack(fill="both", expand=True)
 
-    #  Initializes and packs the navigation bar
+    # Create navigation bar
     nav_frame = tk.Frame(rateGameFrame, bg="#23272A")
     nav_frame.pack(fill="x", pady=10)
     
-    back_button = tk.Button(nav_frame, text="← Home", font=("Arial", 14), bg="#7289DA", fg="white", command=lambda: return_to_home(rateGameFrame, mainMenu))
+    back_button = tk.Button(nav_frame, text="← Home", font=("Arial", 14), bg="#7289DA", fg="white", 
+                            command=lambda: return_to_home(rateGameFrame, mainMenu))
     back_button.pack(side="left", padx=10, pady=5)
 
-    #  Initializes and packs the header
     header = tk.Label(rateGameFrame, text="Rate Game", font=("Arial", 24, "bold"), fg="white", bg="#2C2F33")
     header.pack(pady=10)
 
-    # Initializes and packs the list of registered games to rate
-    gameoptionslist = ["The Legend of Zelda: Breath of the Wild", "The Witcher 3: Wild Hunt", "Super Mario Odyssey", "Fortnite", "Minecraft", "Cyberpunk 2077", "Call of Duty: Black Ops 6", "Lego Star Wars: The Complete Saga", "Lego Star Wars III: The Clone Wars", "Lego Star Wars: The Skywalker Saga"]
+    # Added game options list for user to select from
+    gameoptionslist = [
+        "The Legend of Zelda: Breath of the Wild", "The Witcher 3: Wild Hunt", 
+        "Super Mario Odyssey", "Fortnite", "Minecraft"
+    ]
     selectedgame = tk.StringVar()
     selectedgame.set("Choose a game to rate")
 
     gameoption = tk.OptionMenu(rateGameFrame, selectedgame, *gameoptionslist, command=gameselected)
     gameoption.pack(pady=10)
 
-    # Initializes and packs the review textbox
-    gamereview = tk.Text(rateGameFrame)
+    # Added review text box with defined dimensions
+    gamereview = tk.Text(rateGameFrame, height=5, width=50)
     gamereview.pack(pady=20)
 
-    # Initializes and packs the rating selection
+    # Rating selection dropdown
     rating = [1, 2, 3, 4, 5]
     selectedrating = tk.StringVar()
     selectedrating.set("Choose a rating")
-    
+
     chooserating = tk.Label(rateGameFrame, text="Choose a rating on a scale of 1 to 5", font=("Arial", 14), fg="white", bg="#2C2F33")
     chooserating.pack()
 
     ratingoption = tk.OptionMenu(rateGameFrame, selectedrating, *rating, command=ratingselected)
     ratingoption.pack(pady=20)
 
-    # Initializes and packs the submit rating button
+    #  Added secure input validation to ensure correct user input
     global submitreview 
-    submitreview = tk.Button(rateGameFrame, text="Submit Review", font=("Arial", 14), bg="#7289DA", fg="white", command=lambda: submit_rating(rateGameFrame, mainMenu, selectedgame.get(), gamereview.get("1.0", "end"), selectedrating.get()))
+    submitreview = tk.Button(rateGameFrame, text="Submit Review", font=("Arial", 14), bg="#7289DA", fg="white", 
+                             command=lambda: submit_rating(rateGameFrame, mainMenu, selectedgame, gamereview, selectedrating))
     submitreview.pack()
 
-# Exits the rate game page and returns to the main menu
 def return_to_home(rateGameFrame, mainMenu):
-    """Return to Home Page"""
-    rateGameFrame.pack_forget()  # Hide Best Games page
-    mainMenu.pack()  # Show the main menu again
+    """Returns to the main menu from the Rate Game page."""
+    rateGameFrame.pack_forget()
+    mainMenu.pack()
 
-# Adds the review to a list in the reviews page
+#  Added input validation and error handling
 def submit_rating(root, mainMenu, gametext, reviewtext, ratingtext):
+    """Handles review submission with validation checks."""
     global gameselected_
     global ratingselected_
-    if gameselected_ and ratingselected_ == True:
-        newData = {'game': gametext, 'review': reviewtext, 'rating': int(ratingtext)}
-        reviews.reviews.append(newData)
-        return_to_home(root, mainMenu)
 
-# Executes when a game has been selected
+    game = gametext.get()
+    review = reviewtext.get("1.0", "end").strip()
+    rating = ratingtext.get()
+
+    #  Check if a game has been selected
+    if game == "Choose a game to rate":
+        messagebox.showerror("Input Error", "Please select a game.")  #  Added error message
+        return
+
+    #  Check if review text is empty
+    if not review:
+        messagebox.showerror("Input Error", "Review cannot be empty.")  #  Added error message
+        return
+
+    # Validate that a valid rating is selected
+    if rating not in ['1', '2', '3', '4', '5']:
+        messagebox.showerror("Input Error", "Please select a valid rating.")  # Added error message
+        return
+
+    # If all inputs are valid, save the review
+    newData = {'game': game, 'review': review, 'rating': int(rating)}
+    reviews.reviews.append(newData)
+    messagebox.showinfo("Success", "Your review has been submitted!")  # Added success confirmation
+    return_to_home(root, mainMenu)
+
 def gameselected(value):
+    """Marks that a game has been selected."""
     global gameselected_
-    global ratingselected_
     gameselected_ = True
 
-# Executes when a rating has been selected
 def ratingselected(value):
+    """Marks that a rating has been selected."""
     global ratingselected_
-    global gameselected_
     ratingselected_ = True
-    # I think we should save ratings to a text file to make them easier to access and so that user-submitted reviews aren't erased upon closing the program

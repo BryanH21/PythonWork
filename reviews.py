@@ -6,44 +6,56 @@ reviews = [
     {"game": "The Legend of Zelda: Breath of the Wild", "review": "An incredible open-world experience with stunning visuals and engaging gameplay.", "rating": 5},
     {"game": "The Witcher 3: Wild Hunt", "review": "A masterpiece of storytelling and character development in an expansive fantasy world.", "rating": 5},
     {"game": "Super Mario Odyssey", "review": "A joyous and inventive platformer that showcases the best of Mario's adventures.", "rating": 4},
-    {"game": "Fortnite", "review": "A slowly paced game that speeds up over time. Fight to be the last one standing in this 3 person shooter.", "rating": 3},
-    {"game": "Minecraft", "review": "A relaxed survival experience that focuses on surviving throughout the night, craft and build to make yourself have every advantage possible.", "rating": 4}
+    {"game": "Fortnite", "review": "A slowly paced game that speeds up over time. Fight to be the last one standing in this 3-person shooter.", "rating": 3},
+    {"game": "Minecraft", "review": "A relaxed survival experience that focuses on surviving throughout the night, crafting, and building to gain advantages.", "rating": 4}
 ]
 
-# Function to display reviews
+# Function to display reviews inside a scrollable text box
 def display_reviews(frame):
-    text_reviews = scrolledtext.ScrolledText(frame, width=75, height=40, bg="#23272A", fg="white")
-    text_reviews.pack(pady=10)
+    text_reviews = scrolledtext.ScrolledText(
+        frame, width=75, height=20, bg="#2C2F33", fg="white",
+        font=("Arial", 12), wrap=tk.WORD, borderwidth=2, relief="solid"
+    )
+    text_reviews.pack(pady=10, padx=20, fill="both", expand=True)
 
     for review in reviews:
         stars = "★" * review["rating"] + "☆" * (5 - review["rating"])
-        text_reviews.insert(tk.END, f"Game: {review['game']}\nReview: {review['review']}\nRating: {stars}\n{'-'*40}\n")
-    text_reviews.config(state=tk.DISABLED)
+        text_reviews.insert(
+            tk.END, f"🎮 Game: {review['game']}\n📝 Review: {review['review']}\n⭐ Rating: {stars}\n{'-'*50}\n\n"
+        )
+    
+    text_reviews.config(state=tk.DISABLED)  # Make text read-only
 
+# Function to display the reviews page
 def show_reviews_page(root, mainMenu):
-    mainMenu.pack_forget()
+    mainMenu.pack_forget()  # Hide the main menu
 
-    # Creates the reviews frame
-    reviewFrame = tk.Frame(root, bg="#2C2F33")
+    # Create the review frame
+    reviewFrame = tk.Frame(root, bg="#23272A")
     reviewFrame.pack(fill="both", expand=True)
 
-    #  Initializes and packs the navigation bar
-    nav_frame = tk.Frame(reviewFrame, bg="#23272A")
-    nav_frame.pack(fill="x", pady=10)
-    
-    back_button = tk.Button(nav_frame, text="← Home", font=("Arial", 14), bg="#7289DA", fg="white", command=lambda: return_to_home(reviewFrame, mainMenu))
-    back_button.pack(side="left", padx=10, pady=5)\
-    
-    # Create and place title
-    label_title = tk.Label(reviewFrame, text="Game Reviews", font=("Arial", 24, "bold"), fg="white", bg="#2C2F33")
-    label_title.pack(pady=10)
+    # Create a navigation bar at the top
+    nav_frame = tk.Frame(reviewFrame, bg="#2C2F33", height=50)
+    nav_frame.pack(fill="x", pady=5)
 
-    # Display reviews
+    # Create a back button to return to the home page
+    back_button = tk.Button(
+        nav_frame, text="← Home", font=("Arial", 14, "bold"), bg="#A0AEC0", 
+        fg="#2C2F33", relief="flat", padx=10, pady=5, bd=5, 
+        command=lambda: return_to_home(reviewFrame, mainMenu)
+    )
+    back_button.pack(side="left", padx=10, pady=5)
+
+    # Title label for the page
+    label_title = tk.Label(
+        reviewFrame, text="🎮 Game Reviews", font=("Arial", 24, "bold"), fg="white", bg="#23272A", pady=10
+    )
+    label_title.pack()
+
+    # Display the reviews
     display_reviews(reviewFrame)
 
-
-# Exits the review game page and returns to the main menu
+# Function to return to the home page
 def return_to_home(reviewFrame, mainMenu):
-    """Return to Home Page"""
-    reviewFrame.pack_forget()  # Hide Reviews Games page
+    reviewFrame.pack_forget()  # Hide the reviews page
     mainMenu.pack()  # Show the main menu again
